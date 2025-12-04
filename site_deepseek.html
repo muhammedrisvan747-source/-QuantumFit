@@ -1,0 +1,2321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuantumFit - Premium Fitness Tracking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ogl@0.0.79/dist/ogl.umd.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #5227FF;
+            --secondary-color: #7df9ff;
+            --accent-color: #FF79C6;
+            --dark-bg: #060010;
+            --card-bg: rgba(15, 5, 30, 0.8);
+            --text-light: #F0F0FF;
+            --text-muted: #A0A0C0;
+            --success-color: #00FF9D;
+            --warning-color: #FFB347;
+            --danger-color: #FF5E7D;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header & Navigation */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled {
+            background-color: rgba(6, 0, 16, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            z-index: 1001;
+        }
+
+        .logo i {
+            color: var(--accent-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            font-weight: 500;
+            position: relative;
+            padding: 5px 0;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        .nav-links a.active {
+            color: var(--accent-color);
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--accent-color);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--primary-color), #7b2cff);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(82, 39, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-light);
+            border: 2px solid rgba(125, 249, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--secondary-color);
+            background-color: rgba(125, 249, 255, 0.1);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+        }
+
+        /* Page Container */
+        .page-container {
+            padding-top: 120px;
+            min-height: 100vh;
+        }
+
+        /* Home Page Styles */
+        .hero {
+            padding: 180px 0 100px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+        }
+
+        .hero-text {
+            flex: 1;
+            z-index: 2;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero-text h1 span {
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            max-width: 600px;
+        }
+
+        .hero-visual {
+            flex: 1;
+            height: 500px;
+            position: relative;
+        }
+
+        /* Laser Flow Effect */
+        .laser-flow-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            pointer-events: none;
+        }
+
+        .laser-flow-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 86%;
+            height: 60%;
+            background-color: rgba(6, 0, 16, 0.7);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            z-index: 6;
+            padding: 30px;
+            text-align: center;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 100px 0;
+            background-color: rgba(10, 5, 25, 0.5);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .section-title p {
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .stat-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--secondary-color);
+        }
+
+        .stat-card p {
+            color: var(--text-muted);
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 100px 0;
+        }
+
+        .feature-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 40px 30px;
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .feature-link {
+            color: var(--secondary-color);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Dashboard Preview */
+        .dashboard-section {
+            padding: 100px 0;
+            background-color: rgba(10, 5, 25, 0.5);
+        }
+
+        .dashboard-container {
+            position: relative;
+            height: 600px;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .dashboard-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(82, 39, 255, 0.1), rgba(255, 121, 198, 0.1));
+            z-index: 1;
+        }
+
+        .dashboard-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 2;
+            width: 80%;
+        }
+
+        .dashboard-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-content p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        /* Dashboard Page Styles */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-header h3 {
+            font-size: 1.3rem;
+            color: var(--secondary-color);
+        }
+
+        .card-header i {
+            font-size: 1.3rem;
+            color: var(--accent-color);
+        }
+
+        .card-large {
+            grid-column: span 8;
+        }
+
+        .card-medium {
+            grid-column: span 6;
+        }
+
+        .card-small {
+            grid-column: span 4;
+        }
+
+        .card-full {
+            grid-column: span 12;
+        }
+
+        @media (max-width: 1200px) {
+            .card-large {
+                grid-column: span 12;
+            }
+            .card-medium {
+                grid-column: span 12;
+            }
+            .card-small {
+                grid-column: span 6;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .card-small {
+                grid-column: span 12;
+            }
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-top: 15px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            transition: width 0.5s ease;
+        }
+
+        /* Activity List */
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-info h4 {
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+
+        .activity-info p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .activity-value {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        /* Workout Page */
+        .workout-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .workout-category {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .workout-category:hover {
+            transform: translateY(-10px);
+        }
+
+        .workout-category-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+
+        .workout-list {
+            margin-top: 40px;
+        }
+
+        .workout-item {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .workout-details h4 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--secondary-color);
+        }
+
+        .workout-stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .workout-stat {
+            text-align: center;
+        }
+
+        .workout-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .workout-stat-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Nutrition Page */
+        .nutrition-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .nutrition-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .nutrition-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+
+        .nutrition-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .meal-plan {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        .meal-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .meal-item:last-child {
+            border-bottom: none;
+        }
+
+        .meal-time {
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
+        .meal-name {
+            flex: 1;
+            margin-left: 20px;
+        }
+
+        .meal-calories {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        /* Progress Page */
+        .progress-chart-container {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            height: 400px;
+            position: relative;
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+        }
+
+        .achievement-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .achievement-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--warning-color);
+        }
+
+        .achievement-locked .achievement-icon {
+            color: var(--text-muted);
+            opacity: 0.5;
+        }
+
+        /* Community Page */
+        .community-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .community-feed {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+        }
+
+        .community-post {
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .community-post:last-child {
+            border-bottom: none;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .post-content p {
+            margin-bottom: 15px;
+        }
+
+        .post-stats {
+            display: flex;
+            gap: 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Login/Signup Pages */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+
+        .auth-card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 50px;
+            width: 100%;
+            max-width: 500px;
+            backdrop-filter: blur(10px);
+        }
+
+        .auth-card h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--secondary-color);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* Footer */
+        footer {
+            padding: 80px 0 30px;
+            background-color: rgba(5, 0, 15, 0.9);
+            margin-top: 100px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(125, 249, 255, 0.1);
+            color: var(--secondary-color);
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background-color: var(--secondary-color);
+            color: var(--dark-bg);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero-content {
+                flex-direction: column;
+            }
+            
+            .hero-text h1 {
+                font-size: 2.8rem;
+            }
+            
+            .hero-visual {
+                width: 100%;
+                height: 400px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links, .auth-buttons {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .hero-text h1 {
+                font-size: 2.2rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .auth-card {
+                padding: 30px;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        /* Design Components */
+        
+        /* Electric Border */
+        .electric-border {
+            --electric-light-color: oklch(from var(--electric-border-color) l c h);
+            --eb-border-width: 2px;
+            position: relative;
+            border-radius: inherit;
+            overflow: visible;
+            isolation: isolate;
+        }
+
+        .eb-content {
+            position: relative;
+            border-radius: inherit;
+            z-index: 1;
+        }
+
+        .eb-layers {
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .eb-stroke {
+            border: var(--eb-border-width) solid var(--electric-border-color);
+        }
+
+        .eb-glow-1 {
+            border: var(--eb-border-width) solid oklch(from var(--electric-border-color) l c h / 0.6);
+            opacity: 0.5;
+            filter: blur(calc(0.5px + (var(--eb-border-width) * 0.25)));
+        }
+
+        .eb-glow-2 {
+            border: var(--eb-border-width) solid var(--electric-light-color);
+            opacity: 0.5;
+            filter: blur(calc(2px + (var(--eb-border-width) * 0.5)));
+        }
+
+        .eb-background-glow {
+            z-index: -1;
+            transform: scale(1.08);
+            filter: blur(32px);
+            opacity: 0.3;
+            background: linear-gradient(-30deg, var(--electric-light-color), transparent, var(--electric-border-color));
+        }
+
+        /* Threads Container */
+        .threads-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Balatro Container */
+        .balatro-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Glass Morphism */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="header">
+        <div class="container header-container">
+            <a href="#home" class="logo">
+                <i class="fas fa-bolt"></i>
+                <span>QuantumFit</span>
+            </a>
+            
+            <nav class="nav-links">
+                <a href="#home" class="active">Home</a>
+                <a href="#dashboard">Dashboard</a>
+                <a href="#workouts">Workouts</a>
+                <a href="#nutrition">Nutrition</a>
+                <a href="#progress">Progress</a>
+                <a href="#community">Community</a>
+            </nav>
+            
+            <div class="auth-buttons">
+                <a href="#login" class="btn btn-secondary">Log In</a>
+                <a href="#signup" class="btn btn-primary">Start Free Trial</a>
+            </div>
+            
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main id="main-content">
+        <!-- Home Page -->
+        <section id="home" class="page-section active-page">
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="container hero-content">
+                    <div class="hero-text fade-in-up">
+                        <h1>Track Your Fitness with <span>Quantum Precision</span></h1>
+                        <p>QuantumFit uses advanced algorithms and biometric tracking to provide you with real-time insights into your workouts, nutrition, and overall health. Experience the future of fitness today.</p>
+                        <div style="display: flex; gap: 15px; margin-top: 30px;">
+                            <a href="#signup" class="btn btn-primary">Start Free Trial</a>
+                            <a href="#features" class="btn btn-secondary">Explore Features</a>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-visual fade-in-up">
+                        <div class="laser-flow-container" id="laserFlowContainer"></div>
+                        <div class="laser-flow-box glass-card">
+                            <i class="fas fa-heartbeat" style="font-size: 3rem; margin-bottom: 20px; color: #FF79C6;"></i>
+                            <h3>Real-Time Biometrics</h3>
+                            <p>Track heart rate, calories burned, and performance metrics in real-time with laser precision.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stats Section -->
+            <section class="stats-section" id="stats">
+                <div class="container">
+                    <div class="section-title fade-in-up">
+                        <h2>Why QuantumFit Stands Out</h2>
+                        <p>Join thousands of athletes and fitness enthusiasts who have transformed their training with our platform.</p>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card fade-in-up glass-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-running"></i>
+                            </div>
+                            <h3>10,000+</h3>
+                            <p>Workouts Completed Daily</p>
+                        </div>
+                        
+                        <div class="stat-card fade-in-up glass-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-user-friends"></i>
+                            </div>
+                            <h3>50,000+</h3>
+                            <p>Active Community Members</p>
+                        </div>
+                        
+                        <div class="stat-card fade-in-up glass-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h3>94%</h3>
+                            <p>Report Improved Performance</p>
+                        </div>
+                        
+                        <div class="stat-card fade-in-up glass-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-dumbbell"></i>
+                            </div>
+                            <h3>500+</h3>
+                            <p>Custom Workout Plans</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section class="features-section" id="features">
+                <div class="container">
+                    <div class="section-title fade-in-up">
+                        <h2>Premium Features</h2>
+                        <p>Discover the tools that will take your fitness journey to the next level.</p>
+                    </div>
+                    
+                    <div class="feature-cards">
+                        <div class="feature-card fade-in-up glass-card" style="animation-delay: 0.1s;">
+                            <div class="electric-border" style="--electric-border-color: #7df9ff;">
+                                <div class="eb-content">
+                                    <h3>Advanced Analytics</h3>
+                                    <p>Get deep insights into your performance with our AI-powered analytics dashboard. Track progress, identify patterns, and optimize your training.</p>
+                                    <a href="#dashboard" class="feature-link">Explore Analytics <i class="fas fa-arrow-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="feature-card fade-in-up glass-card" style="animation-delay: 0.2s;">
+                            <div class="electric-border" style="--electric-border-color: #FF79C6;">
+                                <div class="eb-content">
+                                    <h3>Personalized Workouts</h3>
+                                    <p>AI-generated workout plans tailored to your goals, fitness level, and available equipment. Adaptive plans that evolve with your progress.</p>
+                                    <a href="#workouts" class="feature-link">View Workouts <i class="fas fa-arrow-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="feature-card fade-in-up glass-card" style="animation-delay: 0.3s;">
+                            <div class="electric-border" style="--electric-border-color: #5227FF;">
+                                <div class="eb-content">
+                                    <h3>Nutrition Tracking</h3>
+                                    <p>Comprehensive food database with macro tracking, meal planning, and personalized nutrition recommendations based on your goals.</p>
+                                    <a href="#nutrition" class="feature-link">Track Nutrition <i class="fas fa-arrow-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dashboard Preview -->
+            <section class="dashboard-section">
+                <div class="container">
+                    <div class="section-title fade-in-up">
+                        <h2>Interactive Dashboard</h2>
+                        <p>Experience our cutting-edge dashboard with real-time data visualization.</p>
+                    </div>
+                    
+                    <div class="dashboard-container fade-in-up" id="dashboardPreview">
+                        <div class="dashboard-overlay"></div>
+                        <div class="dashboard-content">
+                            <h2>Real-Time Fitness Dashboard</h2>
+                            <p>Track your workouts, monitor your progress, and visualize your fitness journey with our interactive dashboard.</p>
+                            <a href="#dashboard" class="btn btn-primary">Explore Dashboard</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <!-- Dashboard Page -->
+        <section id="dashboard" class="page-section" style="display: none;">
+            <div class="container page-container">
+                <div class="dashboard-header">
+                    <h1>Dashboard</h1>
+                    <div class="user-info">
+                        <div class="user-avatar">JS</div>
+                        <div>
+                            <h3>John Smith</h3>
+                            <p style="color: var(--text-muted); font-size: 0.9rem;">Fitness Level: Advanced</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <!-- Activity Summary -->
+                    <div class="dashboard-card card-large glass-card">
+                        <div class="card-header">
+                            <h3>Today's Activity Summary</h3>
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <h4>Steps</h4>
+                                    <p>Goal: 10,000 steps</p>
+                                </div>
+                                <div class="activity-value">8,542</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <h4>Calories Burned</h4>
+                                    <p>Active calories</p>
+                                </div>
+                                <div class="activity-value">642</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <h4>Workout Time</h4>
+                                    <p>Today's exercise</p>
+                                </div>
+                                <div class="activity-value">45 min</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <h4>Heart Rate</h4>
+                                    <p>Average resting</p>
+                                </div>
+                                <div class="activity-value">68 BPM</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Weekly Progress -->
+                    <div class="dashboard-card card-small glass-card">
+                        <div class="card-header">
+                            <h3>Weekly Progress</h3>
+                            <i class="fas fa-trend-up"></i>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Workouts</span>
+                                <span>4/5</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 80%"></div>
+                            </div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Steps</span>
+                                <span>78%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 78%"></div>
+                            </div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Nutrition</span>
+                                <span>92%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 92%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Next Workout -->
+                    <div class="dashboard-card card-small glass-card">
+                        <div class="card-header">
+                            <h3>Next Workout</h3>
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                        <div style="text-align: center; padding: 20px 0;">
+                            <div style="font-size: 2rem; color: var(--accent-color); margin-bottom: 10px;">Strength Training</div>
+                            <div style="color: var(--text-muted); margin-bottom: 20px;">Tomorrow, 7:00 AM</div>
+                            <div class="btn btn-primary">View Details</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Achievements -->
+                    <div class="dashboard-card card-medium glass-card">
+                        <div class="card-header">
+                            <h3>Recent Achievements</h3>
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <h4>Week Streak</h4>
+                                    <p>5 weeks in a row</p>
+                                </div>
+                                <div style="color: var(--warning-color);"><i class="fas fa-medal"></i></div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <h4>Marathon Ready</h4>
+                                    <p>Completed 20km run</p>
+                                </div>
+                                <div style="color: var(--success-color);"><i class="fas fa-running"></i></div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <h4>Nutrition Master</h4>
+                                    <p>7 days perfect macros</p>
+                                </div>
+                                <div style="color: var(--primary-color);"><i class="fas fa-apple-alt"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Energy Levels -->
+                    <div class="dashboard-card card-medium glass-card">
+                        <div class="card-header">
+                            <h3>Energy Levels</h3>
+                            <i class="fas fa-battery-full"></i>
+                        </div>
+                        <div style="padding: 20px 0;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span>Morning</span>
+                                <span>85%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 85%; background: var(--success-color);"></div>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; margin: 20px 0 10px;">
+                                <span>Afternoon</span>
+                                <span>72%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 72%; background: var(--warning-color);"></div>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; margin: 20px 0 10px;">
+                                <span>Evening</span>
+                                <span>63%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 63%; background: var(--danger-color);"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Threads Visualization -->
+                    <div class="dashboard-card card-full glass-card">
+                        <div class="card-header">
+                            <h3>Activity Visualization</h3>
+                            <i class="fas fa-wave-square"></i>
+                        </div>
+                        <div class="threads-container" id="threadsViz" style="height: 200px;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Workouts Page -->
+        <section id="workouts" class="page-section" style="display: none;">
+            <div class="container page-container">
+                <div class="dashboard-header">
+                    <h1>Workouts</h1>
+                    <div>
+                        <button class="btn btn-primary" onclick="createWorkoutPlan()">
+                            <i class="fas fa-plus"></i> Create New Plan
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="workout-categories">
+                    <div class="workout-category glass-card" onclick="filterWorkouts('strength')">
+                        <div class="workout-category-icon">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                        <h3>Strength Training</h3>
+                        <p>Build muscle and increase strength with targeted exercises</p>
+                    </div>
+                    
+                    <div class="workout-category glass-card" onclick="filterWorkouts('cardio')">
+                        <div class="workout-category-icon">
+                            <i class="fas fa-running"></i>
+                        </div>
+                        <h3>Cardio</h3>
+                        <p>Improve endurance and burn calories with heart-pumping workouts</p>
+                    </div>
+                    
+                    <div class="workout-category glass-card" onclick="filterWorkouts('flexibility')">
+                        <div class="workout-category-icon">
+                            <i class="fas fa-spa"></i>
+                        </div>
+                        <h3>Flexibility</h3>
+                        <p>Increase mobility and prevent injury with stretching routines</p>
+                    </div>
+                </div>
+                
+                <div class="workout-list">
+                    <h2 style="margin-bottom: 20px;">Your Workout Plans</h2>
+                    
+                    <div class="workout-item glass-card">
+                        <div class="workout-details">
+                            <h4>Full Body Strength</h4>
+                            <p>Complete strength workout targeting all major muscle groups</p>
+                            <div style="display: flex; gap: 15px; margin-top: 10px;">
+                                <span style="background: rgba(82, 39, 255, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 0.9rem;">Strength</span>
+                                <span style="background: rgba(125, 249, 255, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 0.9rem;">60 min</span>
+                            </div>
+                        </div>
+                        <div class="workout-stats">
+                            <div class="workout-stat">
+                                <div class="workout-stat-value">12</div>
+                                <div class="workout-stat-label">Exercises</div>
+                            </div>
+                            <div class="workout-stat">
+                                <div class="workout-stat-value">85%</div>
+                                <div class="workout-stat-label">Completion</div>
+                            </div>
+                            <div class="workout-stat">
+                                <button class="btn btn-primary" style="padding: 8px 20px;">Start</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="workout-item glass-card">
+                        <div class="workout-details">
+                            <h4>HIIT Cardio Blast</h4>
+                            <p>High-intensity interval training for maximum calorie burn</p>
+                            <div style="display: flex; gap: 15px; margin-top: 10px;">
+                                <span style="background: rgba(255, 121, 198, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 0.9rem;">Cardio</span>
+                                <span style="background: rgba(125, 249, 255, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 0.9rem;">30 min</span>
+                            </div>
+                        </div>
+                        <div class="workout-stats">
+                            <div class="workout-stat">
+                                <div class="workout-stat-value">8</div>
+                                <div class="workout-stat-label">Intervals</div>
+                            </div>
+                            <div class="workout-stat">
+                                <div class="workout-stat-value">100%</div>
+                                <div class="workout-stat-label">Completion</div>
+                            </div>
+                            <div class="workout-stat">
+                                <button class="btn btn-secondary" style="padding: 8px 20px;">Restart</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="workout-item glass-card">
+                        <div class="workout-details">
+                            <h4>Yoga Flow</h4>
+                            <p>Evening yoga routine for flexibility and relaxation</p>
+                            <div style="display: flex; gap: 15px; margin-top: 10px;">
+                                <span style="background: rgba(0, 255, 157, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 0.9rem;">Flexibility</span>
+                                <span style="background: rgba(125, 249, 255, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 0.9rem;">45 min</span>
+                            </div>
+                        </div>
+                        <div class="workout-stats">
+                            <div class="workout-stat">
+                                <div class="workout-stat-value">15</div>
+                                <div class="workout-stat-label">Poses</div>
+                            </div>
+                            <div class="workout-stat">
+                                <div class="workout-stat-value">60%</div>
+                                <div class="workout-stat-label">Completion</div>
+                            </div>
+                            <div class="workout-stat">
+                                <button class="btn btn-primary" style="padding: 8px 20px;">Resume</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nutrition Page -->
+        <section id="nutrition" class="page-section" style="display: none;">
+            <div class="container page-container">
+                <div class="dashboard-header">
+                    <h1>Nutrition</h1>
+                    <div>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-utensils"></i> Log Meal
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="nutrition-summary">
+                    <div class="nutrition-card glass-card">
+                        <div class="nutrition-value">2,150</div>
+                        <div class="nutrition-label">Calories</div>
+                        <div class="progress-bar" style="margin-top: 15px;">
+                            <div class="progress-fill" style="width: 86%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="nutrition-card glass-card">
+                        <div class="nutrition-value">145g</div>
+                        <div class="nutrition-label">Protein</div>
+                        <div class="progress-bar" style="margin-top: 15px;">
+                            <div class="progress-fill" style="width: 95%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="nutrition-card glass-card">
+                        <div class="nutrition-value">65g</div>
+                        <div class="nutrition-label">Fat</div>
+                        <div class="progress-bar" style="margin-top: 15px;">
+                            <div class="progress-fill" style="width: 72%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="nutrition-card glass-card">
+                        <div class="nutrition-value">210g</div>
+                        <div class="nutrition-label">Carbs</div>
+                        <div class="progress-bar" style="margin-top: 15px;">
+                            <div class="progress-fill" style="width: 88%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <div class="dashboard-card card-large glass-card">
+                        <div class="card-header">
+                            <h3>Today's Meal Plan</h3>
+                            <i class="fas fa-calendar-day"></i>
+                        </div>
+                        <div class="meal-plan">
+                            <div class="meal-item">
+                                <div class="meal-time">8:00 AM</div>
+                                <div class="meal-name">Protein Shake with Banana</div>
+                                <div class="meal-calories">320 cal</div>
+                            </div>
+                            <div class="meal-item">
+                                <div class="meal-time">12:00 PM</div>
+                                <div class="meal-name">Grilled Chicken Salad</div>
+                                <div class="meal-calories">450 cal</div>
+                            </div>
+                            <div class="meal-item">
+                                <div class="meal-time">3:00 PM</div>
+                                <div class="meal-name">Greek Yogurt with Berries</div>
+                                <div class="meal-calories">180 cal</div>
+                            </div>
+                            <div class="meal-item">
+                                <div class="meal-time">7:00 PM</div>
+                                <div class="meal-name">Salmon with Vegetables</div>
+                                <div class="meal-calories">520 cal</div>
+                            </div>
+                            <div class="meal-item">
+                                <div class="meal-time">9:00 PM</div>
+                                <div class="meal-name">Protein Bar</div>
+                                <div class="meal-calories">220 cal</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card card-small glass-card">
+                        <div class="card-header">
+                            <h3>Water Intake</h3>
+                            <i class="fas fa-tint"></i>
+                        </div>
+                        <div style="text-align: center; padding: 30px 0;">
+                            <div style="font-size: 3rem; color: var(--secondary-color); margin-bottom: 10px;">2.1L</div>
+                            <div style="color: var(--text-muted);">of 3.0L goal</div>
+                            <div class="progress-bar" style="margin-top: 20px;">
+                                <div class="progress-fill" style="width: 70%; background: var(--secondary-color);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card card-full glass-card" style="margin-top: 30px;">
+                    <div class="card-header">
+                        <h3>Weekly Nutrition Balance</h3>
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div class="balatro-container" id="nutritionViz" style="height: 300px;"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Progress Page -->
+        <section id="progress" class="page-section" style="display: none;">
+            <div class="container page-container">
+                <div class="dashboard-header">
+                    <h1>Progress Tracking</h1>
+                    <div>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-chart-line"></i> Export Data
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="progress-chart-container glass-card">
+                    <div class="card-header">
+                        <h3>Weight Progress (Last 30 Days)</h3>
+                        <div>
+                            <button class="btn btn-secondary" style="padding: 5px 15px; font-size: 0.9rem;">Weekly</button>
+                            <button class="btn btn-secondary" style="padding: 5px 15px; font-size: 0.9rem;">Monthly</button>
+                            <button class="btn btn-primary" style="padding: 5px 15px; font-size: 0.9rem;">Yearly</button>
+                        </div>
+                    </div>
+                    <div id="progressChart" style="height: 300px; position: relative;">
+                        <!-- Chart will be generated by JavaScript -->
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                            <div style="font-size: 2rem; color: var(--accent-color); margin-bottom: 10px;">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div style="color: var(--text-muted);">Weight down by 3.2kg in the last 30 days</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievements-grid" style="margin-top: 40px;">
+                    <div class="achievement-card glass-card">
+                        <div class="achievement-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <h3>30-Day Streak</h3>
+                        <p>Completed workouts for 30 consecutive days</p>
+                    </div>
+                    
+                    <div class="achievement-card glass-card">
+                        <div class="achievement-icon">
+                            <i class="fas fa-weight"></i>
+                        </div>
+                        <h3>Weight Loss</h3>
+                        <p>Lost 5kg since starting QuantumFit</p>
+                    </div>
+                    
+                    <div class="achievement-card glass-card achievement-locked">
+                        <div class="achievement-icon">
+                            <i class="fas fa-medal"></i>
+                        </div>
+                        <h3>Marathon Finisher</h3>
+                        <p>Complete a full marathon (42.2km)</p>
+                        <div style="margin-top: 10px; color: var(--text-muted); font-size: 0.9rem;">45% complete</div>
+                    </div>
+                    
+                    <div class="achievement-card glass-card">
+                        <div class="achievement-icon">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                        <h3>Strength Master</h3>
+                        <p>Increased all lifts by 20%</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Community Page -->
+        <section id="community" class="page-section" style="display: none;">
+            <div class="container page-container">
+                <div class="dashboard-header">
+                    <h1>Community</h1>
+                    <div>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-plus"></i> New Post
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="community-stats">
+                    <div class="nutrition-card glass-card">
+                        <div class="nutrition-value">1,245</div>
+                        <div class="nutrition-label">Friends</div>
+                    </div>
+                    
+                    <div class="nutrition-card glass-card">
+                        <div class="nutrition-value">42</div>
+                        <div class="nutrition-label">Groups</div>
+                    </div>
+                    
+                    <div class="nutrition-card glass-card">
+                        <div class="nutrition-value">156</div>
+                        <div class="nutrition-label">Challenges</div>
+                    </div>
+                    
+                    <div class="nutrition-card glass-card">
+                        <div class="nutrition-value">18</div>
+                        <div class="nutrition-label">Events</div>
+                    </div>
+                </div>
+                
+                <div class="community-feed glass-card">
+                    <div class="community-post">
+                        <div class="post-header">
+                            <div class="post-avatar">MS</div>
+                            <div>
+                                <h4>Michael Scott</h4>
+                                <p style="color: var(--text-muted); font-size: 0.9rem;">2 hours ago</p>
+                            </div>
+                        </div>
+                        <div class="post-content">
+                            <p>Just completed my first marathon with QuantumFit tracking my progress every step of the way! The training plans are incredible.</p>
+                        </div>
+                        <div class="post-stats">
+                            <span><i class="fas fa-heart"></i> 124</span>
+                            <span><i class="fas fa-comment"></i> 24</span>
+                            <span><i class="fas fa-share"></i> 8</span>
+                        </div>
+                    </div>
+                    
+                    <div class="community-post">
+                        <div class="post-header">
+                            <div class="post-avatar">DJ</div>
+                            <div>
+                                <h4>David Johnson</h4>
+                                <p style="color: var(--text-muted); font-size: 0.9rem;">5 hours ago</p>
+                            </div>
+                        </div>
+                        <div class="post-content">
+                            <p>Hit a new personal record on deadlifts today! 225kg at 85kg body weight. QuantumFit's strength analytics helped me optimize my form.</p>
+                        </div>
+                        <div class="post-stats">
+                            <span><i class="fas fa-heart"></i> 89</span>
+                            <span><i class="fas fa-comment"></i> 12</span>
+                            <span><i class="fas fa-share"></i> 3</span>
+                        </div>
+                    </div>
+                    
+                    <div class="community-post">
+                        <div class="post-header">
+                            <div class="post-avatar">SR</div>
+                            <div>
+                                <h4>Sarah Roberts</h4>
+                                <p style="color: var(--text-muted); font-size: 0.9rem;">1 day ago</p>
+                            </div>
+                        </div>
+                        <div class="post-content">
+                            <p>Who's joining the 30-day yoga challenge this month? I'm creating a group for accountability and progress sharing!</p>
+                        </div>
+                        <div class="post-stats">
+                            <span><i class="fas fa-heart"></i> 67</span>
+                            <span><i class="fas fa-comment"></i> 31</span>
+                            <span><i class="fas fa-share"></i> 5</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Login Page -->
+        <section id="login" class="page-section" style="display: none;">
+            <div class="container page-container">
+                <div class="auth-container">
+                    <div class="auth-card glass-card">
+                        <h2>Welcome Back</h2>
+                        <form id="loginForm">
+                            <div class="form-group">
+                                <label for="loginEmail">Email Address</label>
+                                <input type="email" id="loginEmail" class="form-control" placeholder="Enter your email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="loginPassword">Password</label>
+                                <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required>
+                            </div>
+                            <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <input type="checkbox" id="rememberMe">
+                                    <label for="rememberMe" style="display: inline; margin-left: 8px;">Remember me</label>
+                                </div>
+                                <a href="#" style="color: var(--secondary-color);">Forgot password?</a>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px;">Log In</button>
+                        </form>
+                        <div style="text-align: center; margin-top: 30px; color: var(--text-muted);">
+                            Don't have an account? <a href="#signup" style="color: var(--secondary-color); font-weight: 600;">Sign up</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Signup Page -->
+        <section id="signup" class="page-section" style="display: none;">
+            <div class="container page-container">
+                <div class="auth-container">
+                    <div class="auth-card glass-card">
+                        <h2>Start Your Fitness Journey</h2>
+                        <form id="signupForm">
+                            <div class="form-group">
+                                <label for="signupName">Full Name</label>
+                                <input type="text" id="signupName" class="form-control" placeholder="Enter your full name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="signupEmail">Email Address</label>
+                                <input type="email" id="signupEmail" class="form-control" placeholder="Enter your email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="signupPassword">Password</label>
+                                <input type="password" id="signupPassword" class="form-control" placeholder="Create a password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="fitnessGoal">Primary Fitness Goal</label>
+                                <select id="fitnessGoal" class="form-control" required>
+                                    <option value="">Select your goal</option>
+                                    <option value="weight_loss">Weight Loss</option>
+                                    <option value="muscle_gain">Muscle Gain</option>
+                                    <option value="endurance">Endurance Training</option>
+                                    <option value="flexibility">Flexibility & Mobility</option>
+                                    <option value="general">General Fitness</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="fitnessLevel">Fitness Level</label>
+                                <select id="fitnessLevel" class="form-control" required>
+                                    <option value="">Select your level</option>
+                                    <option value="beginner">Beginner</option>
+                                    <option value="intermediate">Intermediate</option>
+                                    <option value="advanced">Advanced</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px;">Start Free Trial</button>
+                        </form>
+                        <div style="text-align: center; margin-top: 30px; color: var(--text-muted);">
+                            Already have an account? <a href="#login" style="color: var(--secondary-color); font-weight: 600;">Log in</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>QuantumFit</h3>
+                    <p>The future of fitness tracking is here. Join the revolution and transform your training with quantum precision.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Product</h3>
+                    <ul class="footer-links">
+                        <li><a href="#dashboard">Dashboard</a></li>
+                        <li><a href="#workouts">Workouts</a></li>
+                        <li><a href="#nutrition">Nutrition</a></li>
+                        <li><a href="#progress">Progress Tracking</a></li>
+                        <li><a href="#pricing">Pricing</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Company</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Press</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#community">Community</a></li>
+                        <li><a href="#">Partners</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 QuantumFit. All rights reserved. | Designed with <i class="fas fa-heart" style="color: #FF79C6;"></i> for fitness enthusiasts worldwide.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Global State
+        let currentPage = 'home';
+        let userData = {
+            name: "John Smith",
+            email: "john@example.com",
+            fitnessGoal: "muscle_gain",
+            fitnessLevel: "advanced",
+            streak: 30,
+            weightLoss: 5.2
+        };
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        function initializeApp() {
+            // Setup navigation
+            setupNavigation();
+            
+            // Create visual effects
+            createLaserFlowEffect();
+            createThreadsEffect();
+            createBalatroEffect();
+            
+            // Setup forms
+            setupForms();
+            
+            // Initialize animations
+            initializeAnimations();
+            
+            // Load user data if available
+            const savedUser = localStorage.getItem('quantumfit_user');
+            if (savedUser) {
+                userData = JSON.parse(savedUser);
+                updateUserDisplay();
+            }
+        }
+
+        // Navigation System
+        function setupNavigation() {
+            // Handle nav link clicks
+            document.querySelectorAll('.nav-links a, .auth-buttons a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const page = this.getAttribute('href').replace('#', '');
+                    navigateTo(page);
+                });
+            });
+
+            // Handle mobile menu
+            document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+                const navLinks = document.querySelector('.nav-links');
+                const authButtons = document.querySelector('.auth-buttons');
+                
+                if (navLinks.style.display === 'flex') {
+                    navLinks.style.display = 'none';
+                    authButtons.style.display = 'none';
+                } else {
+                    navLinks.style.display = 'flex';
+                    authButtons.style.display = 'flex';
+                    navLinks.style.flexDirection = 'column';
+                    navLinks.style.position = 'absolute';
+                    navLinks.style.top = '100%';
+                    navLinks.style.left = '0';
+                    navLinks.style.width = '100%';
+                    navLinks.style.backgroundColor = 'rgba(6, 0, 16, 0.95)';
+                    navLinks.style.backdropFilter = 'blur(10px)';
+                    navLinks.style.padding = '30px';
+                    navLinks.style.gap = '20px';
+                    
+                    authButtons.style.position = 'absolute';
+                    authButtons.style.top = 'calc(100% + 180px)';
+                    authButtons.style.left = '0';
+                    authButtons.style.width = '100%';
+                    authButtons.style.padding = '0 30px 30px';
+                    authButtons.style.backgroundColor = 'rgba(6, 0, 16, 0.95)';
+                    authButtons.style.backdropFilter = 'blur(10px)';
+                    authButtons.style.flexDirection = 'column';
+                }
+            });
+
+            // Header scroll effect
+            window.addEventListener('scroll', function() {
+                const header = document.getElementById('header');
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+        }
+
+        function navigateTo(page) {
+            // Hide all pages
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Show target page
+            document.getElementById(page).style.display = 'block';
+            
+            // Update active nav link
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${page}`) {
+                    link.classList.add('active');
+                }
+            });
+            
+            // Update current page
+            currentPage = page;
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+            
+            // Close mobile menu if open
+            if (window.innerWidth <= 768) {
+                document.querySelector('.nav-links').style.display = 'none';
+                document.querySelector('.auth-buttons').style.display = 'none';
+            }
+            
+            // Update page title
+            const pageTitles = {
+                'home': 'Home | QuantumFit',
+                'dashboard': 'Dashboard | QuantumFit',
+                'workouts': 'Workouts | QuantumFit',
+                'nutrition': 'Nutrition | QuantumFit',
+                'progress': 'Progress | QuantumFit',
+                'community': 'Community | QuantumFit',
+                'login': 'Log In | QuantumFit',
+                'signup': 'Sign Up | QuantumFit'
+            };
+            
+            document.title = pageTitles[page] || 'QuantumFit';
+        }
+
+        // Visual Effects
+        function createLaserFlowEffect() {
+            const container = document.getElementById('laserFlowContainer');
+            if (!container) return;
+            
+            // Create laser beams
+            for (let i = 0; i < 8; i++) {
+                const beam = document.createElement('div');
+                beam.style.position = 'absolute';
+                beam.style.width = '2px';
+                beam.style.height = '100%';
+                beam.style.background = `linear-gradient(to bottom, transparent, ${i % 2 === 0 ? '#FF79C6' : '#7df9ff'}, transparent)`;
+                beam.style.left = `${i * 12.5}%`;
+                beam.style.top = '0';
+                beam.style.opacity = '0.7';
+                beam.style.animation = `laserFlow ${2 + Math.random()}s ease-in-out infinite`;
+                beam.style.animationDelay = `${Math.random() * 2}s`;
+                container.appendChild(beam);
+            }
+            
+            // Add CSS animation
+            if (!document.querySelector('#laserFlowAnimation')) {
+                const style = document.createElement('style');
+                style.id = 'laserFlowAnimation';
+                style.textContent = `
+                    @keyframes laserFlow {
+                        0%, 100% { opacity: 0.2; transform: scaleY(0.8); }
+                        50% { opacity: 0.9; transform: scaleY(1.2); }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+        function createThreadsEffect() {
+            const container = document.getElementById('threadsViz');
+            if (!container) return;
+            
+            // Create animated threads
+            for (let i = 0; i < 15; i++) {
+                const thread = document.createElement('div');
+                thread.style.position = 'absolute';
+                thread.style.width = '1px';
+                thread.style.height = '100%';
+                thread.style.background = `linear-gradient(to bottom, transparent, ${i % 3 === 0 ? '#5227FF' : i % 3 === 1 ? '#7df9ff' : '#FF79C6'}, transparent)`;
+                thread.style.left = `${Math.random() * 100}%`;
+                thread.style.top = '0';
+                thread.style.opacity = '0.5';
+                thread.style.animation = `threadMove ${3 + Math.random() * 7}s linear infinite`;
+                thread.style.animationDelay = `${Math.random() * 5}s`;
+                container.appendChild(thread);
+            }
+            
+            // Add CSS animation
+            if (!document.querySelector('#threadsAnimation')) {
+                const style = document.createElement('style');
+                style.id = 'threadsAnimation';
+                style.textContent = `
+                    @keyframes threadMove {
+                        0% { transform: translateY(-100%); }
+                        100% { transform: translateY(100%); }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+        function createBalatroEffect() {
+            const container = document.getElementById('nutritionViz');
+            if (!container) return;
+            
+            // Create swirling effect
+            for (let i = 0; i < 20; i++) {
+                const element = document.createElement('div');
+                element.style.position = 'absolute';
+                element.style.width = `${10 + Math.random() * 20}px`;
+                element.style.height = element.style.width;
+                element.style.borderRadius = '50%';
+                element.style.background = `radial-gradient(circle, ${i % 3 === 0 ? '#5227FF' : i % 3 === 1 ? '#7df9ff' : '#FF79C6'}, transparent)`;
+                element.style.left = `${Math.random() * 100}%`;
+                element.style.top = `${Math.random() * 100}%`;
+                element.style.opacity = '0.7';
+                element.style.animation = `balatroMove ${10 + Math.random() * 20}s linear infinite`;
+                element.style.animationDelay = `${Math.random() * 5}s`;
+                container.appendChild(element);
+            }
+            
+            // Add CSS animation
+            if (!document.querySelector('#balatroAnimation')) {
+                const style = document.createElement('style');
+                style.id = 'balatroAnimation';
+                style.textContent = `
+                    @keyframes balatroMove {
+                        0% { transform: translate(0, 0) rotate(0deg); }
+                        25% { transform: translate(${Math.random() * 100}px, ${Math.random() * 100}px) rotate(90deg); }
+                        50% { transform: translate(${Math.random() * 100}px, ${Math.random() * 100}px) rotate(180deg); }
+                        75% { transform: translate(${Math.random() * 100}px, ${Math.random() * 100}px) rotate(270deg); }
+                        100% { transform: translate(0, 0) rotate(360deg); }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+        // Forms
+        function setupForms() {
+            // Login form
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const email = document.getElementById('loginEmail').value;
+                    const password = document.getElementById('loginPassword').value;
+                    
+                    // Simulate login
+                    if (email && password) {
+                        alert('Login successful! Redirecting to dashboard...');
+                        navigateTo('dashboard');
+                        
+                        // Update user data
+                        userData.email = email;
+                        localStorage.setItem('quantumfit_user', JSON.stringify(userData));
+                    }
+                });
+            }
+            
+            // Signup form
+            const signupForm = document.getElementById('signupForm');
+            if (signupForm) {
+                signupForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const name = document.getElementById('signupName').value;
+                    const email = document.getElementById('signupEmail').value;
+                    const password = document.getElementById('signupPassword').value;
+                    const goal = document.getElementById('fitnessGoal').value;
+                    const level = document.getElementById('fitnessLevel').value;
+                    
+                    // Simulate signup
+                    if (name && email && password && goal && level) {
+                        alert('Account created successfully! Starting your free trial...');
+                        
+                        // Update user data
+                        userData = {
+                            name: name,
+                            email: email,
+                            fitnessGoal: goal,
+                            fitnessLevel: level,
+                            streak: 1,
+                            weightLoss: 0
+                        };
+                        
+                        localStorage.setItem('quantumfit_user', JSON.stringify(userData));
+                        updateUserDisplay();
+                        navigateTo('dashboard');
+                    }
+                });
+            }
+        }
+
+        // Animations
+        function initializeAnimations() {
+            // Intersection Observer for fade-in animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -100px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in-up');
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe elements with fade-in class
+            document.querySelectorAll('.fade-in-up').forEach(el => {
+                observer.observe(el);
+            });
+            
+            // Electric border simulation
+            simulateElectricBorders();
+        }
+
+        function simulateElectricBorders() {
+            const borders = document.querySelectorAll('.electric-border');
+            borders.forEach(border => {
+                const color = getComputedStyle(border).getPropertyValue('--electric-border-color').trim();
+                
+                // Create glowing effect
+                setInterval(() => {
+                    const glow = border.querySelector('.eb-glow-1');
+                    if (glow) {
+                        glow.style.opacity = (0.3 + Math.random() * 0.4).toFixed(2);
+                    }
+                }, 500);
+            });
+        }
+
+        // Utility Functions
+        function updateUserDisplay() {
+            // Update user name in dashboard
+            const userNameElements = document.querySelectorAll('.user-avatar, .user-info h3');
+            userNameElements.forEach(el => {
+                if (el.classList.contains('user-avatar')) {
+                    el.textContent = userData.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                } else {
+                    el.textContent = userData.name;
+                }
+            });
+            
+            // Update stats based on user data
+            const streakElement = document.querySelector('.achievement-card:first-child h3');
+            if (streakElement && streakElement.textContent.includes('Day')) {
+                streakElement.textContent = `${userData.streak}-Day Streak`;
+                const achievementCard = streakElement.closest('.achievement-card');
+                const icon = achievementCard.querySelector('.achievement-icon i');
+                icon.className = userData.streak >= 30 ? 'fas fa-trophy' : 'fas fa-fire';
+            }
+            
+            const weightLossElement = document.querySelector('.achievement-card:nth-child(2) p');
+            if (weightLossElement && weightLossElement.textContent.includes('Lost')) {
+                weightLossElement.textContent = `Lost ${userData.weightLoss}kg since starting QuantumFit`;
+            }
+        }
+
+        function filterWorkouts(type) {
+            const workoutItems = document.querySelectorAll('.workout-item');
+            workoutItems.forEach(item => {
+                const category = item.querySelector('span:first-child').textContent.toLowerCase();
+                if (type === 'all' || category.includes(type)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        function createWorkoutPlan() {
+            const workoutName = prompt('Enter workout plan name:');
+            if (workoutName) {
+                const workoutType = prompt('Enter workout type (Strength, Cardio, Flexibility):');
+                const duration = prompt('Enter duration in minutes:');
+                
+                if (workoutType && duration) {
+                    // Create new workout item
+                    const workoutList = document.querySelector('.workout-list');
+                    const newWorkout = document.createElement('div');
+                    newWorkout.className = 'workout-item glass-card fade-in-up';
+                    newWorkout.innerHTML = `
+                        <div class="workout-details">
+                            <h4>${workoutName}</h4>
+                            <p>New custom workout plan</p>
+                            <div style="display: flex; gap: 15px; margin-top: 10px;">
+                                <span style="background: rgba(82, 39, 255, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 0.9rem;">${workoutType}</span>
+                                <span style="background: rgba(125, 249, 255, 0.2); padding: 5px 10px; border-radius: 20px; font-size: 0.9rem;">${duration} min</span>
+                            </div>
+                        </div>
+                        <div class="workout-stats">
+                            <div class="workout-stat">
+                                <div class="workout-stat-value">0</div>
+                                <div class="workout-stat-label">Exercises</div>
+                            </div>
+                            <div class="workout-stat">
+                                <div class="workout-stat-value">0%</div>
+                                <div class="workout-stat-label">Completion</div>
+                            </div>
+                            <div class="workout-stat">
+                                <button class="btn btn-primary" style="padding: 8px 20px;" onclick="editWorkout(this)">Edit</button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    workoutList.appendChild(newWorkout);
+                    alert('Workout plan created! You can now add exercises to it.');
+                }
+            }
+        }
+
+        function editWorkout(button) {
+            const workoutItem = button.closest('.workout-item');
+            const workoutName = workoutItem.querySelector('h4').textContent;
+            const newName = prompt('Edit workout name:', workoutName);
+            
+            if (newName) {
+                workoutItem.querySelector('h4').textContent = newName;
+                alert('Workout updated!');
+            }
+        }
+
+        // Export functions to global scope
+        window.navigateTo = navigateTo;
+        window.filterWorkouts = filterWorkouts;
+        window.createWorkoutPlan = createWorkoutPlan;
+        window.editWorkout = editWorkout;
+    </script>
+</body>
+</html>
